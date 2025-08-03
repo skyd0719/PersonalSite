@@ -1,0 +1,49 @@
+# Overview
+
+This is a professional consulting website built as a full-stack web application. The project features a modern, responsive frontend showcasing consulting services with a contact form system. It's designed as a business portfolio/landing page for a consulting professional, with sections for introduction, services, and client contact functionality. The application uses a monorepo structure with shared TypeScript schemas and implements modern web development practices.
+
+# User Preferences
+
+Preferred communication style: Simple, everyday language.
+
+# System Architecture
+
+## Frontend Architecture
+- **Framework**: React 18 with TypeScript for type safety and modern development
+- **Routing**: Wouter for lightweight client-side routing
+- **Styling**: Tailwind CSS with custom design system using CSS variables for theming
+- **UI Components**: Shadcn/ui component library built on Radix UI primitives for accessibility
+- **State Management**: React Query (TanStack Query) for server state management and caching
+- **Forms**: React Hook Form with Zod validation for type-safe form handling
+- **Build Tool**: Vite for fast development and optimized production builds
+
+## Backend Architecture
+- **Runtime**: Node.js with Express.js web framework
+- **Language**: TypeScript with ES modules for modern JavaScript features
+- **API Design**: RESTful API endpoints with structured error handling
+- **Request Logging**: Custom middleware for API request/response logging
+- **Development**: Hot module replacement and live reloading in development mode
+
+## Data Storage Solutions
+- **Database**: PostgreSQL with Drizzle ORM for type-safe database operations
+- **Database Provider**: Neon Database serverless PostgreSQL
+- **Schema Management**: Drizzle Kit for migrations and schema management
+- **Development Storage**: In-memory storage implementation for development/testing
+- **Schema Validation**: Drizzle-Zod integration for runtime type checking
+
+## External Dependencies
+- **Database**: Neon Database (@neondatabase/serverless) for serverless PostgreSQL hosting
+- **UI Framework**: Extensive Radix UI component suite for accessible, unstyled primitives
+- **Icons**: Lucide React for consistent iconography
+- **Date Handling**: date-fns for date manipulation and formatting
+- **Validation**: Zod for runtime type validation and schema definition
+- **Development Tools**: Replit-specific plugins for enhanced development experience
+- **Session Management**: PostgreSQL session store (connect-pg-simple) for user sessions
+
+## Key Design Patterns
+- **Monorepo Structure**: Shared schemas and types between client and server
+- **Type Safety**: End-to-end TypeScript with shared validation schemas
+- **Component Composition**: Modular component architecture with consistent styling patterns
+- **API Integration**: Centralized API client with error handling and authentication support
+- **Responsive Design**: Mobile-first approach with Tailwind's responsive utilities
+- **Accessibility**: ARIA-compliant components through Radix UI foundation
