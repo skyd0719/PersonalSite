@@ -23,7 +23,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.json({ 
         success: true, 
-        message: "Üzenetét sikeresen elküldtük. Hamarosan válaszolunk!" 
+        message: "Köszönöm az üzenetét! Megkaptam és a lehető leghamarabb válaszolni fogok. Várhatóan 24 órán belül felveszem Önnel a kapcsolatot." 
       });
     } catch (error) {
       if (error instanceof z.ZodError) {

@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import { Mail, Phone, MapPin, Send, Linkedin, Twitter, Facebook } from "lucide-react";
+import { Mail, Phone, MapPin, Send, Linkedin } from "lucide-react";
 import type { InsertContactMessage } from "@shared/schema";
 
 export default function Contact() {
@@ -26,8 +26,8 @@ export default function Contact() {
     },
     onSuccess: (data) => {
       toast({
-        title: "Sikeres küldés",
-        description: data.message,
+        title: "Üzenet elküldve!",
+        description: "Köszönöm az üzenetét! Megkaptam és a lehető leghamarabb válaszolni fogok. Várhatóan 24 órán belül felveszem Önnel a kapcsolatot.",
       });
       setFormData({ name: "", email: "", subject: "", message: "" });
     },
@@ -71,9 +71,7 @@ export default function Contact() {
   ];
 
   const socialLinks = [
-    { icon: Linkedin, href: "#", label: "LinkedIn" },
-    { icon: Twitter, href: "#", label: "Twitter" },
-    { icon: Facebook, href: "#", label: "Facebook" },
+    { icon: Linkedin, href: "https://www.linkedin.com/in/botond-kun", label: "LinkedIn" },
   ];
 
   return (
