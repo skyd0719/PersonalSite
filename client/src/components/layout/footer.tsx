@@ -15,7 +15,7 @@ export default function Footer() {
       <div className="container-max">
         <div className="grid md:grid-cols-3 gap-8">
           <div>
-            <h3 className="text-xl font-bold mb-4">Professzionális Consulting</h3>
+            <h3 className="text-xl font-bold mb-4">Kun Botond</h3>
             <p className="text-slate-300 leading-relaxed">
               Professzionális tanácsadói szolgáltatások magas szakmai színvonalon. 
               Segítem ügyfeleim célkitűzéseinek megvalósítását.
@@ -55,16 +55,16 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold mb-4">Kapcsolat</h4>
             <ul className="space-y-2 text-slate-300">
-              <li>info@consulting.hu</li>
-              <li>+36 30 123 4567</li>
-              <li>Budapest, Magyarország</li>
+              <li>kun.botond@icloud.com</li>
+              <li>+36 70 466 6325</li>
+              <li>Budapest és Vácrátót, Magyarország</li>
             </ul>
           </div>
         </div>
         
         <div className="border-t border-slate-800 mt-8 pt-8 text-center">
           <p className="text-slate-400">
-            © 2024 Professzionális Consulting. Minden jog fenntartva.
+            © 2024 Kun Botond. Minden jog fenntartva.
           </p>
         </div>
       </div>

@@ -30,7 +30,7 @@ export default function Navigation() {
         <div className="flex justify-between items-center h-16">
           {/* Logo/Brand */}
           <div className="flex-shrink-0">
-            <h1 className="text-xl font-bold text-primary">Professzionális Consulting</h1>
+            <h1 className="text-xl font-bold text-primary">Kun Botond</h1>
           </div>
           
           {/* Desktop Navigation */}

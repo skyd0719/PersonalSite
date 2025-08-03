@@ -1,10 +1,13 @@
 # Overview
 
-This is a professional consulting website built as a full-stack web application. The project features a modern, responsive frontend showcasing consulting services with a contact form system. It's designed as a business portfolio/landing page for a consulting professional, with sections for introduction, services, and client contact functionality. The application uses a monorepo structure with shared TypeScript schemas and implements modern web development practices.
+This is a professional personal website for Kun Botond built as a full-stack web application. The project features a modern, responsive frontend showcasing consulting services with a contact form system. It's designed as a business portfolio/landing page for Kun Botond, with sections for introduction, services, and client contact functionality. The application uses a monorepo structure with shared TypeScript schemas and implements modern web development practices.
 
 # User Preferences
 
 Preferred communication style: Simple, everyday language.
+Personal branding: Professional website for "Kun Botond" (replacing generic "Professzionális Consulting")
+Contact information: kun.botond@icloud.com, +36 70 466 6325, Budapest és Vácrátót, Magyarország
+Content preferences: Emphasizes digitalization and modernization commitment over generic qualifications
 
 # System Architecture
 

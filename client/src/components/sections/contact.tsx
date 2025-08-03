@@ -53,19 +53,19 @@ export default function Contact() {
     {
       icon: Mail,
       title: "Email",
-      value: "info@consulting.hu",
-      href: "mailto:info@consulting.hu"
+      value: "kun.botond@icloud.com",
+      href: "mailto:kun.botond@icloud.com"
     },
     {
       icon: Phone,
       title: "Telefon",
-      value: "+36 30 123 4567",
-      href: "tel:+36301234567"
+      value: "+36 70 466 6325",
+      href: "tel:+36704666325"
     },
     {
       icon: MapPin,
       title: "Helyszín",
-      value: "Budapest, Magyarország",
+      value: "Budapest és Vácrátót, Magyarország",
       href: null
     }
   ];

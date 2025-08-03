@@ -10,8 +10,8 @@ export default function About() {
   const qualifications = [
     {
       icon: Tag,
-      title: "Szakmai Képesítés",
-      description: "Elismert szakmai képesítéssel és folyamatos továbbképzésekkel rendelkezem."
+      title: "Digitalizációs Elkötelezettség",
+      description: "Elkötelezett vagyok a digitalizáció és modernizáció mellett, segítve az ügyfeleket a technológiai fejlődés előnyeinek kihasználásában."
     },
     {
       icon: Users,

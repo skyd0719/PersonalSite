@@ -50,9 +50,14 @@ export default function Hero() {
           
           <div className="relative">
             <img 
-              src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=1000" 
-              alt="Professional business consultant" 
-              className="rounded-2xl shadow-2xl w-full h-auto max-w-md mx-auto" 
+              src="/assets/profile-photo.jpg" 
+              alt="Kun Botond - Professzionális tanácsadó" 
+              className="rounded-2xl shadow-2xl w-full h-auto max-w-md mx-auto"
+              onError={(e) => {
+                // Ha nem sikerül betölteni a saját képet, használjunk egy alapértelmezett professzionális képet
+                const target = e.target as HTMLImageElement;
+                target.src = "https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=1000";
+              }}
             />
           </div>
         </div>
