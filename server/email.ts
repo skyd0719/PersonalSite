@@ -16,6 +16,12 @@ interface ContactEmailParams {
 
 export async function sendContactEmail(params: ContactEmailParams): Promise<boolean> {
   try {
+    // Ellenőrizzük, hogy van-e érvényes API kulcs
+    if (!process.env.SENDGRID_API_KEY || process.env.SENDGRID_API_KEY.trim() === '') {
+      console.error('SendGrid API kulcs hiányzik vagy üres');
+      return false;
+    }
+
     const emailContent = `
 Új üzenet érkezett a weboldalról:
 
@@ -30,23 +36,42 @@ ${params.message}
 Ez az email automatikusan lett küldve a kun-botond.hu weboldalról.
     `.trim();
 
+    const htmlContent = `
+      <h2>Új üzenet érkezett a weboldalról</h2>
+      <p><strong>Név:</strong> ${params.name}</p>
+      <p><strong>Email:</strong> ${params.email}</p>
+      <p><strong>Tárgy:</strong> ${params.subject}</p>
+      <h3>Üzenet:</h3>
+      <p>${params.message.replace(/\n/g, '<br>')}</p>
+      <hr>
+      <p><em>Ez az email automatikusan lett küldve a kun-botond.hu weboldalról.</em></p>
+    `;
+
     await mailService.send({
       to: 'kun.botond@icloud.com',
-      from: 'hello@trysendgrid.com', // Ezt használhatjuk SendGrid teszteléshez
-      subject: `Új üzenet a weboldalról: ${params.subject}`,
+      from: 'test@example.com', // Alapértelmezett SendGrid teszt email
+      subject: `Weboldal üzenet: ${params.subject}`,
       text: emailContent,
-      html: emailContent.replace(/\n/g, '<br>'),
+      html: htmlContent,
+      replyTo: params.email, // Így közvetlenül válaszolhat a küldőnek
     });
     
     console.log('Email sikeresen elküldve:', {
       to: 'kun.botond@icloud.com',
       subject: params.subject,
-      from: params.email
+      from: params.email,
+      apiKeyLength: process.env.SENDGRID_API_KEY?.length || 0
     });
     
     return true;
-  } catch (error) {
-    console.error('SendGrid email hiba:', error);
+  } catch (error: any) {
+    console.error('SendGrid email hiba részletesen:', {
+      message: error.message,
+      code: error.code,
+      response: error.response?.body,
+      apiKeyExists: !!process.env.SENDGRID_API_KEY,
+      apiKeyLength: process.env.SENDGRID_API_KEY?.length || 0
+    });
     return false;
   }
 }

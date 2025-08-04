@@ -14,26 +14,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const message = await storage.createContactMessage(validatedData);
       
-      // Email küldése SendGrid-en keresztül
-      const emailSent = await sendContactEmail({
-        name: validatedData.name,
-        email: validatedData.email,
-        subject: validatedData.subject,
-        message: validatedData.message
-      });
+      // Üzenet részletes naplózása
+      console.log("\n" + "=".repeat(60));
+      console.log("🔔 ÚJ ÜZENET ÉRKEZETT A WEBOLDALRÓL!");
+      console.log("=".repeat(60));
+      console.log(`📧 Név: ${validatedData.name}`);
+      console.log(`📬 Email: ${validatedData.email}`);
+      console.log(`📋 Tárgy: ${validatedData.subject}`);
+      console.log(`🕐 Időpont: ${new Date().toLocaleString('hu-HU')}`);
+      console.log("-".repeat(60));
+      console.log("📝 ÜZENET TARTALMA:");
+      console.log(validatedData.message);
+      console.log("=".repeat(60) + "\n");
+      
+      // Email küldési kísérlet - de továbbra is működik az oldal email nélkül is
+      let emailSent = false;
+      try {
+        emailSent = await sendContactEmail({
+          name: validatedData.name,
+          email: validatedData.email,
+          subject: validatedData.subject,
+          message: validatedData.message
+        });
+      } catch (error) {
+        console.log("⚠️ SendGrid email küldés sikertelen");
+      }
       
       if (emailSent) {
-        console.log("Új üzenet érkezett és email elküldve:", {
-          name: message.name,
-          email: message.email,
-          subject: message.subject,
-        });
+        console.log("✅ Email sikeresen elküldve a kun.botond@icloud.com címre!");
       } else {
-        console.error("Email küldése sikertelen, de üzenet mentve:", {
-          name: message.name,
-          email: message.email,
-          subject: message.subject,
-        });
+        console.log("📌 FONTOS: Az üzenet megérkezett és tárolva van!");
+        console.log("💡 Email automatikus továbbítás: SendGrid beállítás szükséges");
       }
       
       res.json({ 
