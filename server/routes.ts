@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertContactMessageSchema } from "@shared/schema";
 import { sendContactEmail } from "./email";
+import { sendTelegramNotification } from "./telegram";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -27,7 +28,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log(validatedData.message);
       console.log("=".repeat(60) + "\n");
       
-      // Email küldési kísérlet - de továbbra is működik az oldal email nélkül is
+      // Telegram értesítés küldése
+      console.log('📱 Telegram értesítés küldése...');
+      const telegramSent = await sendTelegramNotification({
+        name: validatedData.name,
+        email: validatedData.email,
+        subject: validatedData.subject,
+        message: validatedData.message
+      });
+
+      // Email küldési kísérlet (SendGrid)
       let emailSent = false;
       try {
         emailSent = await sendContactEmail({
@@ -40,11 +50,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.log("⚠️ SendGrid email küldés sikertelen");
       }
       
+      // Értesítések állapota
+      if (telegramSent) {
+        console.log("✅ Telegram értesítés elküldve!");
+      }
       if (emailSent) {
         console.log("✅ Email sikeresen elküldve a kun.botond@icloud.com címre!");
-      } else {
-        console.log("📌 FONTOS: Az üzenet megérkezett és tárolva van!");
-        console.log("💡 Email automatikus továbbítás: SendGrid beállítás szükséges");
+      }
+      if (!telegramSent && !emailSent) {
+        console.log("📌 Üzenet tárolva - értesítések beállítása szükséges");
       }
       
       res.json({ 
