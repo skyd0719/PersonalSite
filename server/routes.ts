@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertContactMessageSchema } from "@shared/schema";
+import { sendContactEmail } from "./email";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -13,13 +14,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const message = await storage.createContactMessage(validatedData);
       
-      // In a real application, you would send an email here
-      // For now, we'll just log the message
-      console.log("New contact message received:", {
-        name: message.name,
-        email: message.email,
-        subject: message.subject,
+      // Email küldése SendGrid-en keresztül
+      const emailSent = await sendContactEmail({
+        name: validatedData.name,
+        email: validatedData.email,
+        subject: validatedData.subject,
+        message: validatedData.message
       });
+      
+      if (emailSent) {
+        console.log("Új üzenet érkezett és email elküldve:", {
+          name: message.name,
+          email: message.email,
+          subject: message.subject,
+        });
+      } else {
+        console.error("Email küldése sikertelen, de üzenet mentve:", {
+          name: message.name,
+          email: message.email,
+          subject: message.subject,
+        });
+      }
       
       res.json({ 
         success: true, 
