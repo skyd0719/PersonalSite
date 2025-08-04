@@ -1,0 +1,64 @@
+rest-express@1.0.0 dev
+7:24:12 PM [express] serving on port 5000s
+Browserslist: browsers data (caniuse-lite) is 10 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+SendGrid email hiba: ResponseError: Forbidden
+    at node_modules/@sendgrid/client/src/classes/client.js:167:29
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+  code: 403,
+  response: {
+    headers: Object [AxiosHeaders] {
+      server: 'nginx',
+      date: 'Mon, 04 Aug 2025 19:25:08 GMT',
+      'content-type': 'application/json',
+      'content-length': '281',
+      connection: 'keep-alive',
+      'access-control-allow-origin': 'https://sendgrid.api-docs.io',
+      'access-control-allow-methods': 'POST',
+      'access-control-allow-headers': 'Authorization, Content-Type, On-behalf-of, x-sg-elas-acl',
+      'access-control-max-age': '600',
+      'x-no-cors-reason': 'https://sendgrid.com/docs/Classroom/Basics/API/cors.html',
+      'strict-transport-security': 'max-age=31536000; includeSubDomains',
+      'content-security-policy': "frame-ancestors 'none'",
+      'cache-control': 'no-cache',
+      'x-content-type-options': 'no-sniff',
+      'referrer-policy': 'strict-origin-when-cross-origin'
+    },
+    body: { errors: [Array] }
+  }
+}
+Email küldése sikertelen, de üzenet mentve: {
+  name: 'Tesztelek',
+  email: 'teszteles@tst.hu',
+  subject: 'Tesztelesek'
+}
+7:25:08 PM [express] POST /api/contact 200 in 549ms :: {"success":true,"message":"Köszönöm az üzenet…
+7:26:15 PM [express] POST /api/contact 400 in 1ms :: {"success":false,"message":"Hibás adatok","erro…
+SendGrid email hiba: ResponseError: Forbidden
+    at node_modules/@sendgrid/client/src/classes/client.js:167:29
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+  code: 403,
+  response: {
+    headers: Object [AxiosHeaders] {
+      server: 'nginx',
+      date: 'Mon, 04 Aug 2025 19:26:21 GMT',
+      'content-type': 'application/json',
+      'content-length': '281',
+      connection: 'keep-alive',
+      'access-control-allow-origin': 'https://sendgrid.api-docs.io',
+      'access-control-allow-methods': 'POST',
+      'access-control-allow-headers': 'Authorization, Content-Type, On-behalf-of, x-sg-elas-acl',
+      'access-control-max-age': '600',
+      'x-no-cors-reason': 'https://sendgrid.com/docs/Classroom/Basics/API/cors.html',
+      'strict-transport-security': 'max-age=31536000; includeSubDomains',
+      'content-security-policy': "frame-ancestors 'none'",
+      'cache-control': 'no-cache',
+      'x-content-type-options': 'no-sniff',
+      'referrer-policy': 'strict-origin-when-cross-origin'
+    },
+    body: { errors: [Array] }
+  }
+}
+Email küldése sikertelen, de üzenet mentve: { name: 'tst', email: 'tst@tst.hu', subject: 'tstek' }
+7:26:21 PM [express] POST /api/contact 200 in 126ms :: {"success":true,"message":"Köszönöm az üzenet…
