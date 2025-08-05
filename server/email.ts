@@ -1,11 +1,16 @@
-import { MailerSend, EmailParams, Sender, Recipient } from 'mailersend';
+import nodemailer from 'nodemailer';
 
-const mailerSend = new MailerSend({
-  apiKey: process.env.MAILERSEND_API_KEY || '',
+// Gmail SMTP configuration
+const transporter = nodemailer.createTransporter({
+  service: 'gmail',
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_APP_PASSWORD
+  }
 });
 
-if (!process.env.MAILERSEND_API_KEY) {
-  console.warn("MAILERSEND_API_KEY not found. Email notifications will be skipped.");
+if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+  console.warn("Gmail credentials not found. Email notifications will be skipped.");
 }
 
 interface AppointmentEmailData {
@@ -17,8 +22,8 @@ interface AppointmentEmailData {
 }
 
 export async function sendAppointmentConfirmation(data: AppointmentEmailData): Promise<boolean> {
-  if (!process.env.MAILERSEND_API_KEY) {
-    console.log("MailerSend not configured, skipping email");
+  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+    console.log("Gmail credentials not configured, skipping email");
     return false;
   }
 
@@ -32,16 +37,12 @@ export async function sendAppointmentConfirmation(data: AppointmentEmailData): P
       timeZone: 'Europe/Budapest'
     });
 
-    // Try MailerSend's default verified domain first, then custom domain
-    const sentFrom = new Sender("noreply@trial-351nd4k8nj94zqx8.mlsender.net", "Kun Botond - Professzionális Tanácsadó");
-    const recipients = [new Recipient(data.clientEmail, data.clientName)];
-
-    const emailParams = new EmailParams()
-      .setFrom(sentFrom)
-      .setTo(recipients)
-      .setReplyTo(sentFrom)
-      .setSubject("Időpontfoglalás megerősítése - Kun Botond")
-      .setHtml(`
+    const mailOptions = {
+      from: `"Kun Botond - Professzionális Tanácsadó" <${process.env.GMAIL_USER}>`,
+      to: data.clientEmail,
+      replyTo: 'kun.botond@icloud.com',
+      subject: 'Időpontfoglalás megerősítése - Kun Botond',
+      html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #2563eb;">Időpontfoglalás megerősítése</h2>
           
@@ -70,8 +71,8 @@ export async function sendAppointmentConfirmation(data: AppointmentEmailData): P
           <a href="tel:+36704666325">+36 70 466 6325</a><br>
           <a href="https://botit.hu">botit.hu</a></p>
         </div>
-      `)
-      .setText(`
+      `,
+      text: `
         Kedves ${data.clientName}!
 
         Köszönöm, hogy időpontot foglalt egy ingyenes online konzultációra.
@@ -89,25 +90,18 @@ export async function sendAppointmentConfirmation(data: AppointmentEmailData): P
         kun.botond@icloud.com
         +36 70 466 6325
         https://botit.hu
-      `);
+      `
+    };
 
-    await mailerSend.email.send(emailParams);
-    console.log(`✅ MailerSend email megerősítés elküldve: ${data.clientEmail}`);
+    await transporter.sendMail(mailOptions);
+    console.log(`✅ Gmail email megerősítés elküldve: ${data.clientEmail}`);
     return true;
   } catch (error: any) {
-    // Handle MailerSend trial account limitations and other errors
-    if (error.statusCode === 422) {
-      if (error.body?.message?.includes('Trial accounts')) {
-        console.log(`⚠️ MailerSend trial korlátozás: Csak verifikált címekre küldhet.`);
-        console.log(`💡 Upgradelje a fiókot "Hobby" (ingyenes) csomagra a korlátlan küldéshez.`);
-      } else if (error.body?.message?.includes('domain')) {
-        console.log(`⚠️ MailerSend domain hiba: ${error.body.message}`);
-        console.log(`💡 Ellenőrizze a domain verifikációt a MailerSend admin panelben.`);
-      } else {
-        console.log(`⚠️ MailerSend validációs hiba: ${error.body?.message || 'Ismeretlen hiba'}`);
-      }
-    } else {
-      console.error('MailerSend email error:', error);
+    console.error('Gmail SMTP error:', error);
+    if (error.code === 'EAUTH') {
+      console.log(`⚠️ Gmail hitelesítési hiba: Ellenőrizze a felhasználónevet és app jelszót.`);
+    } else if (error.code === 'ESOCKET') {
+      console.log(`⚠️ Gmail kapcsolódási hiba: Ellenőrizze az internetkapcsolatot.`);
     }
     return false;
   }
