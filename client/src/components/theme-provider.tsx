@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react"
 
-type Theme = "dark" | "light" | "system"
+type Theme = "dark" | "light"
 
 type ThemeProviderProps = {
   children: React.ReactNode
@@ -23,36 +23,39 @@ const ThemeProviderContext = createContext<ThemeProviderState>(initialState)
 export function ThemeProvider({
   children,
   defaultTheme = "light",
-  storageKey = "vite-ui-theme",
+  storageKey = "kun-botond-theme",
   ...props
 }: ThemeProviderProps) {
-  const [theme, setThemeState] = useState<Theme>(
-    () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
-  )
+  const [theme, setThemeState] = useState<Theme>(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem(storageKey) as Theme
+      return stored || defaultTheme
+    }
+    return defaultTheme
+  })
 
   useEffect(() => {
     const root = window.document.documentElement
-
+    
+    // Remove both classes first
     root.classList.remove("light", "dark")
-
-    if (theme === "system") {
-      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-        .matches
-        ? "dark"
-        : "light"
-
-      root.classList.add(systemTheme)
-      return
-    }
-
+    
+    // Add the current theme class
     root.classList.add(theme)
-    console.log('Theme applied:', theme, 'Classes:', root.classList.toString())
+    
+    console.log('Theme effect applied:', theme, 'HTML classes:', root.className)
   }, [theme])
 
   const setTheme = (newTheme: Theme) => {
-    console.log('Setting theme to:', newTheme)
+    console.log('💡 Theme change requested:', theme, '->', newTheme)
+    
+    // Update localStorage
     localStorage.setItem(storageKey, newTheme)
+    
+    // Update state
     setThemeState(newTheme)
+    
+    console.log('✅ Theme state updated to:', newTheme)
   }
 
   const value = {

@@ -5,21 +5,19 @@ import { useTheme } from "@/components/theme-provider"
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme()
 
-  const toggleTheme = () => {
+  const handleClick = () => {
     const newTheme = theme === "light" ? "dark" : "light"
-    console.log('Toggling theme from', theme, 'to', newTheme)
-    console.log('setTheme function available:', typeof setTheme)
+    console.log('🔄 Toggle clicked! Current:', theme, 'New:', newTheme)
     setTheme(newTheme)
   }
 
-  console.log('Current theme in ThemeToggle:', theme)
-  console.log('setTheme type:', typeof setTheme)
+  console.log('🎨 ThemeToggle render - current theme:', theme)
 
   return (
     <Button
       variant="ghost"
       size="icon"
-      onClick={toggleTheme}
+      onClick={handleClick}
       className="h-9 w-9 rounded-md border border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 hover:bg-accent hover:text-accent-foreground transition-all duration-200"
       data-testid="theme-toggle"
       title={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
