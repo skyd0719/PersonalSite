@@ -128,13 +128,17 @@ export default function Booking() {
       // Skip weekends
       if (date.getDay() === 0 || date.getDay() === 6) continue;
       
-      // Add time slots (9 AM - 5 PM)
+      // Add time slots (9 AM - 5 PM) - adjust for timezone
       for (let hour = 9; hour < 17; hour++) {
         const timeSlot = new Date(date);
         timeSlot.setHours(hour, 0, 0, 0);
         
+        // Convert to UTC for comparison (subtract 2 hours for CET/CEST)
+        const utcTimeSlot = new Date(timeSlot.getTime() - (2 * 60 * 60 * 1000));
+        const timeSlotUTC = utcTimeSlot.toISOString();
+        
         // Skip if slot is already booked
-        if (bookedSlots.includes(timeSlot.toISOString())) continue;
+        if (bookedSlots.includes(timeSlotUTC)) continue;
         
         const dateStr = timeSlot.toISOString().split('T')[0];
         const timeStr = timeSlot.toLocaleTimeString('hu-HU', { 
@@ -143,7 +147,7 @@ export default function Booking() {
         });
         
         slots.push({
-          value: timeSlot.toISOString(),
+          value: utcTimeSlot.toISOString(),
           label: `${dateStr} ${timeStr}`,
           date: dateStr,
           time: timeStr
