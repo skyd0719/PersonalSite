@@ -1,9 +1,11 @@
-import sgMail from '@sendgrid/mail';
+import { MailerSend, EmailParams, Sender, Recipient } from 'mailersend';
 
-if (!process.env.SENDGRID_API_KEY) {
-  console.warn("SENDGRID_API_KEY not found. Email notifications will be skipped.");
-} else {
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const mailerSend = new MailerSend({
+  apiKey: process.env.MAILERSEND_API_KEY || '',
+});
+
+if (!process.env.MAILERSEND_API_KEY) {
+  console.warn("MAILERSEND_API_KEY not found. Email notifications will be skipped.");
 }
 
 interface AppointmentEmailData {
@@ -15,8 +17,8 @@ interface AppointmentEmailData {
 }
 
 export async function sendAppointmentConfirmation(data: AppointmentEmailData): Promise<boolean> {
-  if (!process.env.SENDGRID_API_KEY) {
-    console.log("SendGrid not configured, skipping email");
+  if (!process.env.MAILERSEND_API_KEY) {
+    console.log("MailerSend not configured, skipping email");
     return false;
   }
 
@@ -30,11 +32,15 @@ export async function sendAppointmentConfirmation(data: AppointmentEmailData): P
       timeZone: 'Europe/Budapest'
     });
 
-    const msg = {
-      to: data.clientEmail,
-      from: 'kun.botond@icloud.com',
-      subject: 'Időpontfoglalás megerősítése - Kun Botond',
-      html: `
+    const sentFrom = new Sender("kun.botond@icloud.com", "Kun Botond");
+    const recipients = [new Recipient(data.clientEmail, data.clientName)];
+
+    const emailParams = new EmailParams()
+      .setFrom(sentFrom)
+      .setTo(recipients)
+      .setReplyTo(sentFrom)
+      .setSubject("Időpontfoglalás megerősítése - Kun Botond")
+      .setHtml(`
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #2563eb;">Időpontfoglalás megerősítése</h2>
           
@@ -62,14 +68,31 @@ export async function sendAppointmentConfirmation(data: AppointmentEmailData): P
           kun.botond@icloud.com<br>
           +36 70 466 6325</p>
         </div>
-      `
-    };
+      `)
+      .setText(`
+        Kedves ${data.clientName}!
 
-    await sgMail.send(msg);
-    console.log(`✅ Email megerősítés elküldve: ${data.clientEmail}`);
+        Köszönöm, hogy időpontot foglalt egy ingyenes online konzultációra.
+
+        Foglalás részletei:
+        - Időpont: ${appointmentTime}
+        - Időtartam: ${data.duration} perc
+        - Típus: Online konzultáció (videohívás)
+        ${data.notes ? `- Megjegyzés: ${data.notes}` : ''}
+
+        A konzultáció előtt 24 órával megküldöm a videohívás linkjét.
+
+        Üdvözlettel,
+        Kun Botond
+        kun.botond@icloud.com
+        +36 70 466 6325
+      `);
+
+    await mailerSend.email.send(emailParams);
+    console.log(`✅ MailerSend email megerősítés elküldve: ${data.clientEmail}`);
     return true;
   } catch (error) {
-    console.error('SendGrid email error:', error);
+    console.error('MailerSend email error:', error);
     return false;
   }
 }
