@@ -3,6 +3,12 @@
 This is a professional personal website for Kun Botond built as a full-stack web application. The project features a modern, responsive frontend showcasing consulting services with a fully functional contact form system integrated with Telegram bot notifications. It's designed as a business portfolio/landing page for Kun Botond, with sections for introduction, services, and client contact functionality. The application uses a monorepo structure with shared TypeScript schemas and implements modern web development practices.
 
 # Recent Changes
+- **2025-08-05**: Foglalt időpontok szűrése javítva és email design optimalizálva
+  - **Kritikus javítás**: Foglalt időpontok most már nem jelennek meg a naptárban
+  - Napspecifikus API lekérdezések a foglalt időpontokhoz
+  - Helyes időzóna kezelés (CET/CEST) UTC konverzióval
+  - Email template design javítva: kék címkék + fekete értékek + fehér háttér
+  - SendGrid email küldés visszaállítva és működőképes
 - **2025-08-05**: Advanced booking system implemented and refined
   - **Helyesírási javítás**: "Időpont foglalás" → "Időpontfoglalás" az egész projektben
   - PostgreSQL database integration with Drizzle ORM

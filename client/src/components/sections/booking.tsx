@@ -94,30 +94,18 @@ export default function Booking() {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  // Fetch booked slots to exclude them
-  const { data: bookedSlots = [] } = useQuery({
-    queryKey: ["/api/available-slots"],
-    queryFn: async () => {
-      // Get booked slots for the next 14 days
-      const slots = [];
-      for (let i = 1; i <= 14; i++) {
-        const date = new Date();
-        date.setDate(date.getDate() + i);
-        if (date.getDay() === 0 || date.getDay() === 6) continue; // Skip weekends
-        
-        const dateStr = date.toISOString().split('T')[0];
-        const response = await fetch(`/api/available-slots?date=${dateStr}`);
-        if (response.ok) {
-          const data = await response.json();
-          slots.push(...data.bookedSlots);
-        }
-      }
-      return slots;
+  // Get booked slots for a specific date
+  const getBookedSlotsForDate = async (dateStr: string) => {
+    const response = await fetch(`/api/available-slots?date=${dateStr}`);
+    if (response.ok) {
+      const data = await response.json();
+      return data.bookedSlots;
     }
-  });
+    return [];
+  };
 
-  // Generate time slots for the next 14 days
-  const generateTimeSlots = () => {
+  // Generate time slots for the next 14 days with proper booking check
+  const generateTimeSlots = async () => {
     const slots = [];
     const today = new Date();
     
@@ -128,19 +116,21 @@ export default function Booking() {
       // Skip weekends
       if (date.getDay() === 0 || date.getDay() === 6) continue;
       
-      // Add time slots (9 AM - 5 PM) - adjust for timezone
+      const dateStr = date.toISOString().split('T')[0];
+      
+      // Get booked slots for this specific date
+      const bookedSlotsForDate = await getBookedSlotsForDate(dateStr);
+      
+      // Add time slots (9 AM - 5 PM)
       for (let hour = 9; hour < 17; hour++) {
-        const timeSlot = new Date(date);
-        timeSlot.setHours(hour, 0, 0, 0);
+        const timeSlot = new Date(date.getFullYear(), date.getMonth(), date.getDate(), hour, 0, 0, 0);
+        const utcTimeSlot = new Date(timeSlot.toISOString());
         
-        // Convert to UTC for comparison (subtract 2 hours for CET/CEST)
-        const utcTimeSlot = new Date(timeSlot.getTime() - (2 * 60 * 60 * 1000));
-        const timeSlotUTC = utcTimeSlot.toISOString();
+        // Check if this specific UTC time is booked on this date
+        if (bookedSlotsForDate.includes(utcTimeSlot.toISOString())) {
+          continue; // Skip booked time slots
+        }
         
-        // Skip if slot is already booked
-        if (bookedSlots.includes(timeSlotUTC)) continue;
-        
-        const dateStr = timeSlot.toISOString().split('T')[0];
         const timeStr = timeSlot.toLocaleTimeString('hu-HU', { 
           hour: '2-digit', 
           minute: '2-digit' 
@@ -158,7 +148,11 @@ export default function Booking() {
     return slots;
   };
 
-  const timeSlots = generateTimeSlots();
+  // Use async query for time slots
+  const { data: timeSlots = [] } = useQuery({
+    queryKey: ["/api/time-slots"],
+    queryFn: generateTimeSlots
+  });
 
   return (
     <section id="booking" className="section-padding bg-muted/30">
@@ -207,7 +201,7 @@ export default function Booking() {
                       <SelectValue placeholder="Válasszon időpontot" />
                     </SelectTrigger>
                     <SelectContent>
-                      {timeSlots.map((slot) => (
+                      {Array.isArray(timeSlots) && timeSlots.map((slot) => (
                         <SelectItem key={slot.value} value={slot.value}>
                           {slot.label}
                         </SelectItem>
