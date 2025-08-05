@@ -42,12 +42,12 @@ export async function sendAppointmentConfirmation(data: AppointmentEmailData): P
           
           <p>Köszönöm, hogy időpontot foglalt egy ingyenes online konzultációra. Örömmel megerősítem a foglalását:</p>
           
-          <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #e2e8f0;">
             <h3 style="color: #1e40af; margin-top: 0;">Foglalás részletei:</h3>
-            <p><strong>Időpont:</strong> ${appointmentTime}</p>
-            <p><strong>Időtartam:</strong> ${data.duration} perc</p>
-            <p><strong>Típus:</strong> Online konzultáció (videohívás)</p>
-            ${data.notes ? `<p><strong>Megjegyzés:</strong> ${data.notes}</p>` : ''}
+            <p style="color: #000000; margin: 8px 0;"><strong style="color: #000000;">Időpont:</strong> ${appointmentTime}</p>
+            <p style="color: #000000; margin: 8px 0;"><strong style="color: #000000;">Időtartam:</strong> ${data.duration} perc</p>
+            <p style="color: #000000; margin: 8px 0;"><strong style="color: #000000;">Típus:</strong> Online konzultáció (videohívás)</p>
+            ${data.notes ? `<p style="color: #000000; margin: 8px 0;"><strong style="color: #000000;">Megjegyzés:</strong> ${data.notes}</p>` : ''}
           </div>
           
           <p>A konzultáció előtt 24 órával egy külön emailben megküldöm a videohívás linkjét.</p>
