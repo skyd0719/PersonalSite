@@ -42,12 +42,12 @@ export async function sendAppointmentConfirmation(data: AppointmentEmailData): P
           
           <p>Köszönöm, hogy időpontot foglalt egy ingyenes online konzultációra. Örömmel megerősítem a foglalását:</p>
           
-          <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #e2e8f0;">
-            <h3 style="color: #1e40af; margin-top: 0;">Foglalás részletei:</h3>
-            <p style="color: #000000; margin: 8px 0;"><strong style="color: #000000;">Időpont:</strong> ${appointmentTime}</p>
-            <p style="color: #000000; margin: 8px 0;"><strong style="color: #000000;">Időtartam:</strong> ${data.duration} perc</p>
-            <p style="color: #000000; margin: 8px 0;"><strong style="color: #000000;">Típus:</strong> Online konzultáció (videohívás)</p>
-            ${data.notes ? `<p style="color: #000000; margin: 8px 0;"><strong style="color: #000000;">Megjegyzés:</strong> ${data.notes}</p>` : ''}
+          <div style="background-color: #ffffff; padding: 20px; border-radius: 8px; margin: 20px 0; border: 2px solid #2563eb; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <h3 style="color: #1e40af; margin-top: 0; margin-bottom: 16px;">Foglalás részletei:</h3>
+            <p style="color: #333333; margin: 12px 0; font-size: 16px; line-height: 1.5;"><strong style="color: #1e40af;">Időpont:</strong> <span style="color: #000000;">${appointmentTime}</span></p>
+            <p style="color: #333333; margin: 12px 0; font-size: 16px; line-height: 1.5;"><strong style="color: #1e40af;">Időtartam:</strong> <span style="color: #000000;">${data.duration} perc</span></p>
+            <p style="color: #333333; margin: 12px 0; font-size: 16px; line-height: 1.5;"><strong style="color: #1e40af;">Típus:</strong> <span style="color: #000000;">Online konzultáció (videohívás)</span></p>
+            ${data.notes ? `<p style="color: #333333; margin: 12px 0; font-size: 16px; line-height: 1.5;"><strong style="color: #1e40af;">Megjegyzés:</strong> <span style="color: #000000;">${data.notes}</span></p>` : ''}
           </div>
           
           <p>A konzultáció előtt 24 órával egy külön emailben megküldöm a videohívás linkjét.</p>
