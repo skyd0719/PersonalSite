@@ -32,9 +32,8 @@ export async function sendAppointmentConfirmation(data: AppointmentEmailData): P
       timeZone: 'Europe/Budapest'
     });
 
-    // MailerSend trial accounts can only send to verified domains/emails
-    // For production use, verify your domain in MailerSend dashboard
-    const sentFrom = new Sender("kun.botond@icloud.com", "Kun Botond");
+    // Try MailerSend's default verified domain first, then custom domain
+    const sentFrom = new Sender("noreply@trial-351nd4k8nj94zqx8.mlsender.net", "Kun Botond - Professzionális Tanácsadó");
     const recipients = [new Recipient(data.clientEmail, data.clientName)];
 
     const emailParams = new EmailParams()
@@ -67,8 +66,9 @@ export async function sendAppointmentConfirmation(data: AppointmentEmailData): P
           <p>Üdvözlettel,<br>
           <strong>Kun Botond</strong><br>
           Professzionális tanácsadó<br>
-          kun.botond@icloud.com<br>
-          +36 70 466 6325</p>
+          <a href="mailto:kun.botond@icloud.com">kun.botond@icloud.com</a><br>
+          <a href="tel:+36704666325">+36 70 466 6325</a><br>
+          <a href="https://botit.hu">botit.hu</a></p>
         </div>
       `)
       .setText(`
@@ -88,17 +88,24 @@ export async function sendAppointmentConfirmation(data: AppointmentEmailData): P
         Kun Botond
         kun.botond@icloud.com
         +36 70 466 6325
+        https://botit.hu
       `);
 
     await mailerSend.email.send(emailParams);
     console.log(`✅ MailerSend email megerősítés elküldve: ${data.clientEmail}`);
     return true;
   } catch (error: any) {
-    // Handle MailerSend trial account limitations
-    if (error.statusCode === 422 && error.body?.message?.includes('Trial accounts')) {
-      console.log(`⚠️ MailerSend trial korlátozás: Csak a regisztrált admin email címre küldhet.`);
-      console.log(`💡 Megoldás: MailerSend admin panel → Domains → Add domain → icloud.com domain verifikáció`);
-      console.log(`📧 Vagy használjon egy MailerSend által verifikált küldő címet.`);
+    // Handle MailerSend trial account limitations and other errors
+    if (error.statusCode === 422) {
+      if (error.body?.message?.includes('Trial accounts')) {
+        console.log(`⚠️ MailerSend trial korlátozás: Csak verifikált címekre küldhet.`);
+        console.log(`💡 Upgradelje a fiókot "Hobby" (ingyenes) csomagra a korlátlan küldéshez.`);
+      } else if (error.body?.message?.includes('domain')) {
+        console.log(`⚠️ MailerSend domain hiba: ${error.body.message}`);
+        console.log(`💡 Ellenőrizze a domain verifikációt a MailerSend admin panelben.`);
+      } else {
+        console.log(`⚠️ MailerSend validációs hiba: ${error.body?.message || 'Ismeretlen hiba'}`);
+      }
     } else {
       console.error('MailerSend email error:', error);
     }
