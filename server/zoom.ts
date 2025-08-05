@@ -62,6 +62,163 @@ function generateIcsContent(
   return icsContent;
 }
 
+// Send calendar invitation to admin (Kun Botond) for his calendar
+async function sendAdminCalendarInvitation(
+  clientName: string,
+  clientEmail: string,
+  meeting: ZoomMeetingResponse,
+  appointmentDate: string
+): Promise<boolean> {
+  const meetingDate = new Date(meeting.start_time);
+  const formattedDate = meetingDate.toLocaleDateString('hu-HU', {
+    year: 'numeric',
+    month: 'long',  
+    day: 'numeric',
+    weekday: 'long'
+  });
+  const formattedTime = meetingDate.toLocaleTimeString('hu-HU', {
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+
+  const subject = `[Admin] Új konzultáció - ${clientName} (${formattedDate})`;
+  
+  const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #000000; background-color: #ffffff; margin: 0; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background: #ffffff; border: 2px solid #059669; border-radius: 8px; padding: 30px; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .title { color: #059669; font-size: 24px; font-weight: bold; margin-bottom: 10px; }
+        .info-section { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 20px; margin: 20px 0; }
+        .info-row { margin: 10px 0; }
+        .label { color: #059669; font-weight: bold; display: inline-block; min-width: 120px; }
+        .value { color: #000000; }
+        .zoom-link { background: #059669; color: white; padding: 12px 20px; text-decoration: none; border-radius: 6px; display: inline-block; margin: 20px 0; font-weight: bold; }
+        .zoom-link:hover { background: #047857; }
+        .footer { margin-top: 30px; text-align: center; color: #64748b; font-size: 14px; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <div class="title">📅 Admin Naptár Esemény</div>
+          <p style="color: #64748b; margin: 5px 0;">Új konzultáció beütemezve</p>
+        </div>
+        
+        <p style="color: #000000;"><strong>Kedves Botond!</strong></p>
+        
+        <p style="color: #000000;">Új időpontfoglalás érkezett. Itt a konzultáció részletei:</p>
+        
+        <div class="info-section">
+          <div class="info-row">
+            <span class="label">Kliens neve:</span>
+            <span class="value">${clientName}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Kliens email:</span>
+            <span class="value">${clientEmail}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Dátum:</span>
+            <span class="value">${formattedDate}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Időpont:</span>
+            <span class="value">${formattedTime}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Időtartam:</span>
+            <span class="value">30 perc</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Meeting ID:</span>
+            <span class="value">${meeting.id}</span>
+          </div>
+          ${meeting.password ? `
+          <div class="info-row">
+            <span class="label">Jelszó:</span>
+            <span class="value">${meeting.password}</span>
+          </div>
+          ` : ''}
+        </div>
+        
+        <div style="text-align: center;">
+          <a href="${meeting.join_url}" class="zoom-link">
+            🎥 Csatlakozás a Zoom meetinghez
+          </a>
+        </div>
+        
+        <div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 6px; padding: 15px; margin: 20px 0;">
+          <strong style="color: #1e40af;">📅 Naptárba mentés:</strong>
+          <p style="color: #1e40af; margin: 10px 0;">Az email mellékletében találod a .ics fájlt, amelyet megnyitva automatikusan hozzáadhatod az eseményt az iCloud naptáradhoz.</p>
+        </div>
+        
+        <p style="color: #000000;">Ez egy automatikusan generált admin értesítés az időpontfoglalási rendszerből.</p>
+        
+        <div class="footer">
+          <p style="color: #64748b;">Botit.hu Consulting Platform - Admin Panel</p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+
+  const textContent = `
+Admin Naptár Esemény - Új Konzultáció
+
+Kedves Botond!
+
+Új időpontfoglalás érkezett:
+
+Kliens neve: ${clientName}
+Kliens email: ${clientEmail}
+Dátum: ${formattedDate}
+Időpont: ${formattedTime}
+Időtartam: 30 perc
+Meeting ID: ${meeting.id}
+${meeting.password ? `Jelszó: ${meeting.password}` : ''}
+
+Zoom link: ${meeting.join_url}
+
+Az email mellékletében található .ics fájlt megnyitva automatikusan hozzáadhatod az eseményt az iCloud naptáradhoz.
+  `;
+
+  // Generate the same calendar file but with admin perspective
+  const icsContent = generateIcsContent(meeting, clientName, clientEmail, appointmentDate);
+  const icsAttachment = {
+    content: Buffer.from(icsContent).toString('base64'),
+    filename: `admin-konzultacio-${clientName.replace(/\s+/g, '-').toLowerCase()}.ics`,
+    type: 'text/calendar',
+    disposition: 'attachment'
+  };
+
+  try {
+    const result = await sendEmailWithAttachment(
+      'kun.botond@icloud.com',
+      'kun.botond@icloud.com',
+      subject,
+      textContent,
+      htmlContent,
+      [icsAttachment]
+    );
+    
+    if (result) {
+      console.log(`✅ Admin calendar invitation sent to kun.botond@icloud.com`);
+    } else {
+      console.log(`❌ Failed to send admin calendar invitation`);
+    }
+    
+    return result;
+  } catch (error) {
+    console.error('Error sending admin calendar invitation:', error);
+    return false;
+  }
+}
+
 interface ZoomTokenResponse {
   access_token: string;
   token_type: string;
@@ -366,7 +523,7 @@ kun.botond@icloud.com
     disposition: 'attachment'
   };
 
-  return await sendEmailWithAttachment(
+  const clientEmailResult = await sendEmailWithAttachment(
     clientEmail,
     'kun.botond@icloud.com', 
     subject,
@@ -374,6 +531,11 @@ kun.botond@icloud.com
     htmlContent,
     [icsAttachment]
   );
+
+  // Also send to admin for calendar integration
+  await sendAdminCalendarInvitation(clientName, clientEmail, meeting, appointmentDate);
+
+  return clientEmailResult;
 }
 
 // Schedule Zoom meeting invitation (to be sent 24 hours before)

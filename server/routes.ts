@@ -221,6 +221,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         `${validatedData.notes ? `📝 **Megjegyzés:** ${validatedData.notes}\n` : ''}\n` +
         `📧 **Email megerősítés:** ${emailSent ? '✅ SendGrid elküldve' : '❌ SendGrid sikertelen'}\n` +
         `📲 **Zoom meghívó:** 24 órával előtte automatikusan elküldve\n` +
+        `📅 **Admin naptár:** Automatikusan elküldve kun.botond@icloud.com címre\n` +
         `🕐 **Foglalás időpontja:** ${new Date().toLocaleString('hu-HU')}`;
 
       await sendTelegramNotification({
