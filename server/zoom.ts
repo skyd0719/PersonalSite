@@ -257,9 +257,9 @@ export async function sendZoomInvitation(
           <p style="color: #64748b; margin: 5px 0;">Ingyenes online konzultáció</p>
         </div>
         
-        <p>Kedves <strong>${clientName}</strong>!</p>
+        <p style="color: #000000;">Kedves <strong>${clientName}</strong>!</p>
         
-        <p>Köszönöm, hogy időpontot foglalt az ingyenes konzultációra. Itt a Zoom videohívás részletei:</p>
+        <p style="color: #000000;">Köszönöm, hogy időpontot foglalt az ingyenes konzultációra. Itt a Zoom videohívás részletei:</p>
         
         <div class="info-section">
           <div class="info-row">
@@ -306,11 +306,11 @@ export async function sendZoomInvitation(
           </ul>
         </div>
         
-        <p>Ha bármilyen kérdése van vagy módosítani szeretné az időpontot, kérem, válaszoljon erre az emailre vagy hívjon a +36 70 466 6325 telefonszámon.</p>
+        <p style="color: #000000;">Ha bármilyen kérdése van vagy módosítani szeretné az időpontot, kérem, válaszoljon erre az emailre vagy hívjon a +36 70 466 6325 telefonszámon.</p>
         
-        <p>Várom a konzultációt!</p>
+        <p style="color: #000000;">Várom a konzultációt!</p>
         
-        <p style="margin-top: 30px;">
+        <p style="margin-top: 30px; color: #000000;">
           Üdvözlettel,<br>
           <strong>Kun Botond</strong><br>
           <span style="color: #64748b;">Üzleti tanácsadó</span><br>
@@ -319,7 +319,7 @@ export async function sendZoomInvitation(
         </p>
         
         <div class="footer">
-          <p>Ez egy automatikusan generált email. Kérem, ne válaszoljon közvetlenül erre az üzenetre.</p>
+          <p style="color: #64748b;">Ez egy automatikusan generált email. Kérem, ne válaszoljon közvetlenül erre az üzenetre.</p>
         </div>
       </div>
     </body>
