@@ -10,17 +10,17 @@ export default function About() {
   const qualifications = [
     {
       icon: Tag,
-      title: "Digitalizációs Elkötelezettség",
+      title: "Digitalizációs elkötelezettség",
       description: "Elkötelezett vagyok a digitalizáció és modernizáció mellett, segítve az ügyfeleket a technológiai fejlődés előnyeinek kihasználásában."
     },
     {
       icon: Users,
-      title: "Ügyfél-központú Megközelítés",
+      title: "Ügyfél-központú megközelítés",
       description: "Minden projektet az ügyfél egyedi igényeihez és céljaihoz igazítok."
     },
     {
       icon: Award,
-      title: "Kiváló Minőség",
+      title: "Kiváló minőség",
       description: "Elkötelezett vagyok a legmagasabb minőségi standardok betartása mellett."
     }
   ];
