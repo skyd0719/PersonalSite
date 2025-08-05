@@ -34,7 +34,7 @@ export default function Hero() {
                 size="lg" 
                 className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg"
               >
-                Ingyenes konzultáció
+                Ingyenes online konzultáció
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
               <Button 

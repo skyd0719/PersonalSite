@@ -9,7 +9,7 @@ export default function Navigation() {
   const navItems = [
     { href: "#about", label: "Bemutatkozás" },
     { href: "#services", label: "Szolgáltatások" },
-    { href: "#booking", label: "Időpont foglalás" },
+    { href: "#booking", label: "Ingyenes konzultáció" },
     { href: "#contact", label: "Kapcsolat" },
   ];
 

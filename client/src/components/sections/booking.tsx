@@ -56,21 +56,22 @@ export default function Booking() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!selectedService || !formData.appointmentDate) {
+    if (!formData.appointmentDate) {
       toast({
         title: "Hiányzó adatok",
-        description: "Kérem válasszon szolgáltatást és időpontot!",
+        description: "Kérem válasszon időpontot!",
         variant: "destructive",
       });
       return;
     }
 
-    const selectedServiceData = services.find((s: Service) => s.id === selectedService);
+    // Fixed to free consultation service
+    const freeConsultationService = services.find((s: Service) => s.name === "Ingyenes konzultáció");
     
     bookingMutation.mutate({
       ...formData,
-      serviceId: selectedService,
-      duration: selectedServiceData?.duration || 60,
+      serviceId: freeConsultationService?.id || "",
+      duration: 60,
     } as InsertAppointment);
   };
 
@@ -120,10 +121,10 @@ export default function Booking() {
       <div className="container-max">
         <div className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-            Foglaljon ingyenes konzultációt
+            Foglaljon ingyenes online konzultációt
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Beszéljük meg projektjét egy személyes konzultáció keretében. Az első konzultáció ingyenes!
+            Beszéljük meg projektjét egy online konzultáció keretében. Az első konzultáció ingyenes és 60 percet tart!
           </p>
         </div>
 
@@ -138,25 +139,17 @@ export default function Booking() {
             </CardHeader>
             <CardContent className="px-0">
               <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Service Selection */}
+                {/* Service Selection - Fixed to Free Consultation */}
                 <div className="space-y-2">
                   <Label htmlFor="service">Szolgáltatás típusa</Label>
-                  <Select value={selectedService} onValueChange={setSelectedService}>
-                    <SelectTrigger data-testid="select-service">
-                      <SelectValue placeholder="Válasszon szolgáltatást" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {servicesLoading ? (
-                        <SelectItem value="loading">Betöltés...</SelectItem>
-                      ) : (
-                        services.map((service) => (
-                          <SelectItem key={service.id} value={service.id}>
-                            {service.name} ({service.duration} perc)
-                          </SelectItem>
-                        ))
-                      )}
-                    </SelectContent>
-                  </Select>
+                  <div className="p-3 bg-muted rounded-md border">
+                    <p className="font-medium text-foreground">
+                      Ingyenes online konzultáció (60 perc)
+                    </p>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Ismerkedő beszélgetés projektjéről és együttműködési lehetőségekről
+                    </p>
+                  </div>
                 </div>
 
                 {/* Time Slot Selection */}
@@ -288,9 +281,9 @@ export default function Booking() {
                       3
                     </div>
                     <div>
-                      <h4 className="font-semibold mb-1">Konzultáció</h4>
+                      <h4 className="font-semibold mb-1">Online konzultáció</h4>
                       <p className="text-sm text-muted-foreground">
-                        Online vagy személyesen tartjuk meg a beszélgetést.
+                        Online videohívás formájában tartjuk meg a beszélgetést.
                       </p>
                     </div>
                   </div>
