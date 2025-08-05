@@ -22,8 +22,8 @@ This is a professional personal website for Kun Botond built as a full-stack web
 - **2025-08-04**: Text formatting consistency improvements (lowercase titles)
 - **2025-08-04**: Copyright year updated to 2025
 - **2025-08-04**: Telegram bot integration completed and tested successfully
-- **2025-08-05**: Email service migrated from SendGrid to MailerSend for better cost-effectiveness (3,000 free emails/month)
-  - botit.hu domain verified in MailerSend for professional email sending
+- **2025-08-05**: Email service restored to SendGrid for reliable delivery
+  - Previous experiments with MailerSend and Gmail removed
 - **2025-08-04**: Contact form validates and sends notifications to Chat ID: 7518315750
 - **2025-08-04**: Project ready for deployment and domain connection (botit.hu)
 
