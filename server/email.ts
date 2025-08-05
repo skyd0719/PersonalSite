@@ -32,6 +32,8 @@ export async function sendAppointmentConfirmation(data: AppointmentEmailData): P
       timeZone: 'Europe/Budapest'
     });
 
+    // MailerSend trial accounts can only send to verified domains/emails
+    // For production use, verify your domain in MailerSend dashboard
     const sentFrom = new Sender("kun.botond@icloud.com", "Kun Botond");
     const recipients = [new Recipient(data.clientEmail, data.clientName)];
 
@@ -91,8 +93,15 @@ export async function sendAppointmentConfirmation(data: AppointmentEmailData): P
     await mailerSend.email.send(emailParams);
     console.log(`✅ MailerSend email megerősítés elküldve: ${data.clientEmail}`);
     return true;
-  } catch (error) {
-    console.error('MailerSend email error:', error);
+  } catch (error: any) {
+    // Handle MailerSend trial account limitations
+    if (error.statusCode === 422 && error.body?.message?.includes('Trial accounts')) {
+      console.log(`⚠️ MailerSend trial korlátozás: Csak a regisztrált admin email címre küldhet.`);
+      console.log(`💡 Megoldás: MailerSend admin panel → Domains → Add domain → icloud.com domain verifikáció`);
+      console.log(`📧 Vagy használjon egy MailerSend által verifikált küldő címet.`);
+    } else {
+      console.error('MailerSend email error:', error);
+    }
     return false;
   }
 }
