@@ -3,6 +3,13 @@
 This is a professional personal website for Kun Botond built as a full-stack web application. The project features a modern, responsive frontend showcasing consulting services with a fully functional contact form system integrated with Telegram bot notifications. It's designed as a business portfolio/landing page for Kun Botond, with sections for introduction, services, and client contact functionality. The application uses a monorepo structure with shared TypeScript schemas and implements modern web development practices.
 
 # Recent Changes
+- **2025-08-05**: Zoom integráció megvalósítva teljes automatizációval
+  - **Zoom Meeting automatikus létrehozás**: Minden időpontfoglaláskor automatikusan létrejön a Zoom meeting
+  - **24 órás email ütemezés**: Zoom meghívó automatikusan elküldve 24 órával a konzultáció előtt
+  - **Server-to-Server OAuth**: Biztonságos Zoom API integráció
+  - **Teljes email template**: Professzionális Zoom meghívó design egyedi template-tel
+  - **Database kiterjesztés**: Zoom meeting adatok tárolása (ID, URL, jelszó, küldés státusz)
+  - **Telegram értesítés bővítés**: Zoom meeting részletek beépítve a Telegram üzenetekbe
 - **2025-08-05**: Foglalt időpontok szűrése javítva és email design optimalizálva
   - **Kritikus javítás**: Foglalt időpontok most már nem jelennek meg a naptárban
   - Napspecifikus API lekérdezések a foglalt időpontokhoz

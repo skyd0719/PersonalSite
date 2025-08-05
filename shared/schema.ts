@@ -49,6 +49,11 @@ export const appointments = pgTable("appointments", {
   status: varchar("status").notNull().default("pending"), // pending, confirmed, cancelled, completed
   notes: varchar("notes"),
   meetingLink: varchar("meeting_link"),
+  // Zoom meeting details
+  zoomMeetingId: varchar("zoom_meeting_id"),
+  zoomJoinUrl: text("zoom_join_url"),
+  zoomPassword: varchar("zoom_password"),
+  zoomInvitationSent: boolean("zoom_invitation_sent").default(false),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

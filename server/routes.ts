@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { insertContactMessageSchema, insertAppointmentSchema, insertServiceSchema, services, appointments } from "@shared/schema";
 import { sendTelegramNotification } from "./telegram";
 import { sendAppointmentConfirmation } from "./email";
+import { createZoomMeeting, scheduleZoomInvitation } from "./zoom";
 import { db } from "./db";
 import { eq, and, gte, lt } from "drizzle-orm";
 import { z } from "zod";
@@ -155,13 +156,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Create appointment with confirmed status
+      // Create Zoom meeting
+      const zoomMeeting = await createZoomMeeting(
+        `Ingyenes konzultáció - ${validatedData.clientName}`,
+        appointmentTime.toISOString(),
+        validatedData.duration,
+        'Europe/Budapest'
+      );
+
+      // Create appointment with confirmed status and Zoom details
       const appointmentData = {
         ...validatedData,
-        status: "confirmed" as const
+        status: "confirmed" as const,
+        zoomMeetingId: zoomMeeting.id.toString(),
+        zoomJoinUrl: zoomMeeting.join_url,
+        zoomPassword: zoomMeeting.password,
+        zoomInvitationSent: false
       };
       
       const [appointment] = await db.insert(appointments).values(appointmentData).returning();
+
+      // Schedule Zoom invitation for 24 hours before
+      scheduleZoomInvitation(
+        validatedData.clientEmail,
+        validatedData.clientName,
+        appointmentTime,
+        zoomMeeting
+      );
 
       // Send both Telegram and Email notifications
       console.log("\n" + "=".repeat(60));
@@ -172,6 +193,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log(`📱 Telefon: ${validatedData.clientPhone || 'Nincs megadva'}`);
       console.log(`📅 Időpont: ${appointmentTime.toLocaleString('hu-HU')}`);
       console.log(`⏰ Időtartam: ${validatedData.duration} perc`);
+      console.log(`🎥 Zoom Meeting ID: ${zoomMeeting.id}`);
+      console.log(`🔗 Zoom Link: ${zoomMeeting.join_url}`);
       if (validatedData.notes) {
         console.log(`📝 Megjegyzés: ${validatedData.notes}`);
       }
@@ -193,8 +216,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         `📱 **Telefon:** ${validatedData.clientPhone || 'Nincs megadva'}\n` +
         `📅 **Időpont:** ${appointmentTime.toLocaleString('hu-HU')}\n` +
         `⏰ **Időtartam:** ${validatedData.duration} perc\n` +
+        `🎥 **Zoom Meeting ID:** ${zoomMeeting.id}\n` +
+        `🔗 **Zoom Link:** ${zoomMeeting.join_url}\n` +
         `${validatedData.notes ? `📝 **Megjegyzés:** ${validatedData.notes}\n` : ''}\n` +
         `📧 **Email megerősítés:** ${emailSent ? '✅ SendGrid elküldve' : '❌ SendGrid sikertelen'}\n` +
+        `📲 **Zoom meghívó:** 24 órával előtte automatikusan elküldve\n` +
         `🕐 **Foglalás időpontja:** ${new Date().toLocaleString('hu-HU')}`;
 
       await sendTelegramNotification({
