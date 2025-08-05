@@ -194,7 +194,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         `📅 **Időpont:** ${appointmentTime.toLocaleString('hu-HU')}\n` +
         `⏰ **Időtartam:** ${validatedData.duration} perc\n` +
         `${validatedData.notes ? `📝 **Megjegyzés:** ${validatedData.notes}\n` : ''}\n` +
-        `📧 **Email megerősítés:** ${emailSent ? '✅ Gmail SMTP elküldve' : '⚠️ Gmail SMTP sikertelen'}\n` +
+        `📧 **Email megerősítés:** ${emailSent ? '✅ SendGrid elküldve' : '❌ SendGrid sikertelen'}\n` +
         `🕐 **Foglalás időpontja:** ${new Date().toLocaleString('hu-HU')}`;
 
       await sendTelegramNotification({

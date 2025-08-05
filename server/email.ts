@@ -1,16 +1,9 @@
-import nodemailer from 'nodemailer';
+import sgMail from '@sendgrid/mail';
 
-// Gmail SMTP configuration
-const transporter = nodemailer.createTransporter({
-  service: 'gmail',
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_APP_PASSWORD
-  }
-});
-
-if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
-  console.warn("Gmail credentials not found. Email notifications will be skipped.");
+if (!process.env.SENDGRID_API_KEY) {
+  console.warn("SENDGRID_API_KEY not found. Email notifications will be skipped.");
+} else {
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 }
 
 interface AppointmentEmailData {
@@ -22,8 +15,8 @@ interface AppointmentEmailData {
 }
 
 export async function sendAppointmentConfirmation(data: AppointmentEmailData): Promise<boolean> {
-  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
-    console.log("Gmail credentials not configured, skipping email");
+  if (!process.env.SENDGRID_API_KEY) {
+    console.log("SendGrid not configured, skipping email");
     return false;
   }
 
@@ -37,10 +30,9 @@ export async function sendAppointmentConfirmation(data: AppointmentEmailData): P
       timeZone: 'Europe/Budapest'
     });
 
-    const mailOptions = {
-      from: `"Kun Botond - Professzionális Tanácsadó" <${process.env.GMAIL_USER}>`,
+    const msg = {
       to: data.clientEmail,
-      replyTo: 'kun.botond@icloud.com',
+      from: 'kun.botond@icloud.com',
       subject: 'Időpontfoglalás megerősítése - Kun Botond',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -93,16 +85,11 @@ export async function sendAppointmentConfirmation(data: AppointmentEmailData): P
       `
     };
 
-    await transporter.sendMail(mailOptions);
-    console.log(`✅ Gmail email megerősítés elküldve: ${data.clientEmail}`);
+    await sgMail.send(msg);
+    console.log(`✅ SendGrid email megerősítés elküldve: ${data.clientEmail}`);
     return true;
-  } catch (error: any) {
-    console.error('Gmail SMTP error:', error);
-    if (error.code === 'EAUTH') {
-      console.log(`⚠️ Gmail hitelesítési hiba: Ellenőrizze a felhasználónevet és app jelszót.`);
-    } else if (error.code === 'ESOCKET') {
-      console.log(`⚠️ Gmail kapcsolódási hiba: Ellenőrizze az internetkapcsolatot.`);
-    }
+  } catch (error) {
+    console.error('SendGrid email error:', error);
     return false;
   }
 }
