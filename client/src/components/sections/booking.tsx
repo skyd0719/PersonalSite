@@ -45,9 +45,24 @@ export default function Booking() {
       setSelectedService("");
     },
     onError: (error: any) => {
+      console.error("Booking error:", error);
+      
+      let title = "Hiba történt";
+      let description = "Nem sikerült elküldeni a foglalást.";
+      
+      if (error.message?.includes("409")) {
+        title = "Időpont már foglalt";
+        description = "Ez az időpont már foglalt. Kérem válasszon másik időpontot.";
+      } else if (error.message?.includes("400")) {
+        title = "Hibás adatok";
+        description = "Kérem ellenőrizze az űrlap adatait.";
+      } else if (error.message) {
+        description = error.message;
+      }
+      
       toast({
-        title: "Hiba történt",
-        description: error.message || "Nem sikerült elküldeni a foglalást.",
+        title,
+        description,
         variant: "destructive",
       });
     },
@@ -79,6 +94,28 @@ export default function Booking() {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  // Fetch booked slots to exclude them
+  const { data: bookedSlots = [] } = useQuery({
+    queryKey: ["/api/available-slots"],
+    queryFn: async () => {
+      // Get booked slots for the next 14 days
+      const slots = [];
+      for (let i = 1; i <= 14; i++) {
+        const date = new Date();
+        date.setDate(date.getDate() + i);
+        if (date.getDay() === 0 || date.getDay() === 6) continue; // Skip weekends
+        
+        const dateStr = date.toISOString().split('T')[0];
+        const response = await fetch(`/api/available-slots?date=${dateStr}`);
+        if (response.ok) {
+          const data = await response.json();
+          slots.push(...data.bookedSlots);
+        }
+      }
+      return slots;
+    }
+  });
+
   // Generate time slots for the next 14 days
   const generateTimeSlots = () => {
     const slots = [];
@@ -95,6 +132,9 @@ export default function Booking() {
       for (let hour = 9; hour < 17; hour++) {
         const timeSlot = new Date(date);
         timeSlot.setHours(hour, 0, 0, 0);
+        
+        // Skip if slot is already booked
+        if (bookedSlots.includes(timeSlot.toISOString())) continue;
         
         const dateStr = timeSlot.toISOString().split('T')[0];
         const timeStr = timeSlot.toLocaleTimeString('hu-HU', { 

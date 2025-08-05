@@ -3,8 +3,9 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertContactMessageSchema, insertAppointmentSchema, insertServiceSchema, services, appointments } from "@shared/schema";
 import { sendTelegramNotification } from "./telegram";
+import { sendAppointmentConfirmation } from "./email";
 import { db } from "./db";
-import { eq } from "drizzle-orm";
+import { eq, and, gte, lt } from "drizzle-orm";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -92,43 +93,122 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Check available time slots
+  app.get("/api/available-slots", async (req, res) => {
+    try {
+      const { date } = req.query;
+      
+      if (!date || typeof date !== 'string') {
+        return res.status(400).json({ message: "Date parameter required" });
+      }
+
+      const startOfDay = new Date(date);
+      startOfDay.setHours(0, 0, 0, 0);
+      
+      const endOfDay = new Date(date);
+      endOfDay.setHours(23, 59, 59, 999);
+
+      // Get existing appointments for the date
+      const existingAppointments = await db
+        .select()
+        .from(appointments)
+        .where(and(
+          gte(appointments.appointmentDate, startOfDay),
+          lt(appointments.appointmentDate, endOfDay),
+          eq(appointments.status, "confirmed")
+        ));
+
+      const bookedSlots = existingAppointments.map(apt => 
+        apt.appointmentDate.toISOString()
+      );
+
+      res.json({ bookedSlots });
+    } catch (error) {
+      console.error("Error fetching available slots:", error);
+      res.status(500).json({ message: "Failed to fetch available slots" });
+    }
+  });
+
   // Appointments endpoints
   app.post("/api/appointments", async (req, res) => {
     try {
       const validatedData = insertAppointmentSchema.parse(req.body);
-      const [appointment] = await db.insert(appointments).values(validatedData).returning();
+      
+      // Check for time slot conflicts
+      const appointmentTime = new Date(validatedData.appointmentDate);
+      const conflictStart = new Date(appointmentTime.getTime() - 30 * 60 * 1000); // 30 minutes before
+      const conflictEnd = new Date(appointmentTime.getTime() + 90 * 60 * 1000); // 90 minutes after
 
-      // Send Telegram notification for new appointment
+      const existingAppointments = await db
+        .select()
+        .from(appointments)
+        .where(and(
+          gte(appointments.appointmentDate, conflictStart),
+          lt(appointments.appointmentDate, conflictEnd),
+          eq(appointments.status, "confirmed")
+        ));
+
+      if (existingAppointments.length > 0) {
+        return res.status(409).json({
+          message: "Ez az időpont már foglalt. Kérem válasszon másik időpontot.",
+          conflict: true
+        });
+      }
+
+      // Create appointment with confirmed status
+      const appointmentData = {
+        ...validatedData,
+        status: "confirmed" as const
+      };
+      
+      const [appointment] = await db.insert(appointments).values(appointmentData).returning();
+
+      // Send both Telegram and Email notifications
       console.log("\n" + "=".repeat(60));
       console.log("📅 ÚJ IDŐPONT FOGLALÁS!");
       console.log("=".repeat(60));
       console.log(`👤 Név: ${validatedData.clientName}`);
       console.log(`📧 Email: ${validatedData.clientEmail}`);
       console.log(`📱 Telefon: ${validatedData.clientPhone || 'Nincs megadva'}`);
-      console.log(`📅 Időpont: ${new Date(validatedData.appointmentDate).toLocaleString('hu-HU')}`);
+      console.log(`📅 Időpont: ${appointmentTime.toLocaleString('hu-HU')}`);
       console.log(`⏰ Időtartam: ${validatedData.duration} perc`);
       if (validatedData.notes) {
         console.log(`📝 Megjegyzés: ${validatedData.notes}`);
       }
       console.log("=".repeat(60) + "\n");
 
+      // Send email confirmation to client
+      const emailSent = await sendAppointmentConfirmation({
+        clientName: validatedData.clientName,
+        clientEmail: validatedData.clientEmail,
+        appointmentDate: appointmentTime,
+        duration: validatedData.duration,
+        notes: validatedData.notes
+      });
+
+      // Send Telegram notification
       const telegramMessage = `🎯 **ÚJ IDŐPONT FOGLALÁS**\n\n` +
         `👤 **Név:** ${validatedData.clientName}\n` +
         `📧 **Email:** ${validatedData.clientEmail}\n` +
         `📱 **Telefon:** ${validatedData.clientPhone || 'Nincs megadva'}\n` +
-        `📅 **Időpont:** ${new Date(validatedData.appointmentDate).toLocaleString('hu-HU')}\n` +
+        `📅 **Időpont:** ${appointmentTime.toLocaleString('hu-HU')}\n` +
         `⏰ **Időtartam:** ${validatedData.duration} perc\n` +
         `${validatedData.notes ? `📝 **Megjegyzés:** ${validatedData.notes}\n` : ''}\n` +
+        `📧 **Email megerősítés:** ${emailSent ? '✅ Elküldve' : '❌ Sikertelen'}\n` +
         `🕐 **Foglalás időpontja:** ${new Date().toLocaleString('hu-HU')}`;
 
       await sendTelegramNotification({
         name: validatedData.clientName,
         email: validatedData.clientEmail,
-        subject: `Új időpont foglalás - ${new Date(validatedData.appointmentDate).toLocaleDateString('hu-HU')}`,
+        subject: `Új időpont foglalás - ${appointmentTime.toLocaleDateString('hu-HU')}`,
         message: telegramMessage
       });
 
-      res.json(appointment);
+      res.json({ 
+        ...appointment, 
+        emailSent,
+        message: "Időpont sikeresen lefoglalva! Megerősítő emailt fog kapni."
+      });
     } catch (error) {
       console.error("Error creating appointment:", error);
       
