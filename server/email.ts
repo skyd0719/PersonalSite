@@ -45,6 +45,47 @@ export async function sendEmail(
   }
 }
 
+// Email sending function with attachments
+export async function sendEmailWithAttachment(
+  to: string,
+  from: string,
+  subject: string,
+  text: string,
+  html?: string,
+  attachments?: Array<{
+    content: string;
+    filename: string;
+    type: string;
+    disposition: string;
+  }>
+): Promise<boolean> {
+  if (!process.env.SENDGRID_API_KEY) {
+    console.log("SendGrid not configured, skipping email");
+    return false;
+  }
+
+  try {
+    const msg: any = {
+      to,
+      from,
+      subject,
+      text,
+      html: html || text,
+    };
+
+    if (attachments && attachments.length > 0) {
+      msg.attachments = attachments;
+    }
+
+    await sgMail.send(msg);
+    console.log(`✅ Email with ${attachments?.length || 0} attachment(s) sent successfully to ${to}`);
+    return true;
+  } catch (error) {
+    console.error(`❌ Failed to send email with attachments to ${to}:`, error);
+    return false;
+  }
+}
+
 export async function sendAppointmentConfirmation(data: AppointmentEmailData): Promise<boolean> {
   if (!process.env.SENDGRID_API_KEY) {
     console.log("SendGrid not configured, skipping email");

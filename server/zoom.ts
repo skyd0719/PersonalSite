@@ -1,4 +1,66 @@
-import { sendEmail } from './email';
+import { sendEmail, sendEmailWithAttachment } from './email';
+
+// Generate .ics calendar file content
+function generateIcsContent(
+  meeting: ZoomMeetingResponse,
+  clientName: string,
+  clientEmail: string,
+  appointmentDate: string
+): string {
+  const startDate = new Date(meeting.start_time);
+  const endDate = new Date(startDate.getTime() + 30 * 60 * 1000); // 30 minutes later
+  
+  // Format dates for ICS (YYYYMMDDTHHMMSSZ)
+  const formatIcsDate = (date: Date): string => {
+    return date.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+  };
+  
+  const startFormatted = formatIcsDate(startDate);
+  const endFormatted = formatIcsDate(endDate);
+  const createdFormatted = formatIcsDate(new Date());
+  
+  // Generate unique UID for the event
+  const uid = `zoom-meeting-${meeting.id}-${Date.now()}@botit.hu`;
+  
+  const icsContent = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Kun Botond Consulting//Zoom Meeting//HU',
+    'CALSCALE:GREGORIAN',
+    'METHOD:REQUEST',
+    'BEGIN:VEVENT',
+    `UID:${uid}`,
+    `DTSTART:${startFormatted}`,
+    `DTEND:${endFormatted}`,
+    `DTSTAMP:${createdFormatted}`,
+    `ORGANIZER;CN=Kun Botond:MAILTO:kun.botond@icloud.com`,
+    `ATTENDEE;CN=${clientName};RSVP=TRUE:MAILTO:${clientEmail}`,
+    `SUMMARY:Ingyenes konzultáció - ${clientName}`,
+    `DESCRIPTION:Ingyenes online konzultáció Kun Botonddal\\n\\n` +
+    `Zoom Meeting részletek:\\n` +
+    `Meeting ID: ${meeting.id}\\n` +
+    `Csatlakozási link: ${meeting.join_url}\\n` +
+    `${meeting.password ? `Jelszó: ${meeting.password}\\n` : ''}\\n` +
+    `Fontos:\\n` +
+    `- Kérem\\, csatlakozzon 2-3 perccel korábban\\n` +
+    `- Stabil internetkapcsolat szükséges\\n` +
+    `- Technikai probléma esetén hívjon: +36 70 466 6325`,
+    `LOCATION:Online videohívás (Zoom)`,
+    `URL:${meeting.join_url}`,
+    'STATUS:CONFIRMED',
+    'TRANSP:OPAQUE',
+    'SEQUENCE:0',
+    'BEGIN:VALARM',
+    'TRIGGER:-PT15M',
+    'ACTION:DISPLAY',
+    'DESCRIPTION:Konzultáció 15 perc múlva kezdődik',
+    'END:VALARM',
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ].join('\\r\\n');
+  
+  return icsContent;
+}
 
 interface ZoomTokenResponse {
   access_token: string;
@@ -148,7 +210,7 @@ export async function createZoomMeeting(
   return meeting;
 }
 
-// Send Zoom meeting invitation email
+// Send Zoom meeting invitation email with calendar attachment
 export async function sendZoomInvitation(
   clientEmail: string,
   clientName: string,
@@ -230,6 +292,11 @@ export async function sendZoomInvitation(
           </a>
         </div>
         
+        <div style="background: #e0f2fe; border: 1px solid #0284c7; border-radius: 6px; padding: 15px; margin: 20px 0;">
+          <strong style="color: #0369a1;">📅 Naptárba mentés:</strong>
+          <p style="color: #0369a1; margin: 10px 0;">Az email mellékletében találja a .ics fájlt, amelyet megnyitva automatikusan hozzáadhatja az eseményt a naptárához (Outlook, Google Calendar, Apple Calendar, stb.).</p>
+        </div>
+        
         <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 6px; padding: 15px; margin: 20px 0;">
           <strong style="color: #92400e;">⏰ Fontos tudnivalók:</strong>
           <ul style="color: #92400e; margin: 10px 0; padding-left: 20px;">
@@ -290,12 +357,22 @@ kun.botond@icloud.com
 +36 70 466 6325
   `;
 
-  return await sendEmail(
+  // Generate calendar file content
+  const icsContent = generateIcsContent(meeting, clientName, clientEmail, appointmentDate);
+  const icsAttachment = {
+    content: Buffer.from(icsContent).toString('base64'),
+    filename: 'konzultacio-zoom-meeting.ics',
+    type: 'text/calendar',
+    disposition: 'attachment'
+  };
+
+  return await sendEmailWithAttachment(
     clientEmail,
-    'kun.botond@icloud.com',
+    'kun.botond@icloud.com', 
     subject,
     textContent,
-    htmlContent
+    htmlContent,
+    [icsAttachment]
   );
 }
 

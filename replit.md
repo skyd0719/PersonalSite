@@ -6,6 +6,8 @@ This is a professional personal website for Kun Botond built as a full-stack web
 - **2025-08-05**: Zoom integráció megvalósítva teljes automatizációval
   - **Zoom Meeting automatikus létrehozás**: Minden időpontfoglaláskor automatikusan létrejön a Zoom meeting
   - **24 órás email ütemezés**: Zoom meghívó automatikusan elküldve 24 órával a konzultáció előtt
+  - **Naptári integráció**: .ics fájl automatikus generálása és csatolása az emailhez
+  - **Automatikus naptárba mentés**: Email melléklettel Outlook, Google Calendar, Apple Calendar támogatás
   - **Server-to-Server OAuth**: Biztonságos Zoom API integráció
   - **Teljes email template**: Professzionális Zoom meghívó design egyedi template-tel
   - **Database kiterjesztés**: Zoom meeting adatok tárolása (ID, URL, jelszó, küldés státusz)
