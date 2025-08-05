@@ -8,10 +8,12 @@ export function ThemeToggle() {
   const toggleTheme = () => {
     const newTheme = theme === "light" ? "dark" : "light"
     console.log('Toggling theme from', theme, 'to', newTheme)
+    console.log('setTheme function available:', typeof setTheme)
     setTheme(newTheme)
   }
 
   console.log('Current theme in ThemeToggle:', theme)
+  console.log('setTheme type:', typeof setTheme)
 
   return (
     <Button
