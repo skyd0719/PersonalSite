@@ -30,20 +30,20 @@ export default function Hero() {
             
             <div className="flex flex-col sm:flex-row gap-4">
               <Button 
-                onClick={() => scrollToSection("#services")}
+                onClick={() => scrollToSection("#booking")}
                 size="lg" 
                 className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg"
               >
-                Szolgáltatások
+                Ingyenes konzultáció
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
               <Button 
-                onClick={() => scrollToSection("#contact")}
+                onClick={() => scrollToSection("#services")}
                 variant="outline" 
                 size="lg"
                 className="border-primary text-primary hover:bg-primary hover:text-primary-foreground"
               >
-                Kapcsolatfelvétel
+                Szolgáltatások
               </Button>
             </div>
           </div>

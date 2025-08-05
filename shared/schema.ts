@@ -1,5 +1,6 @@
-import { pgTable, text, varchar, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, timestamp, integer, boolean } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
+import { relations, sql } from "drizzle-orm";
 import { z } from "zod";
 
 export const contactMessages = pgTable("contact_messages", {
@@ -25,3 +26,69 @@ export const insertContactMessageSchema = createInsertSchema(contactMessages).pi
 
 export type InsertContactMessage = z.infer<typeof insertContactMessageSchema>;
 export type ContactMessage = typeof contactMessages.$inferSelect;
+
+// Booking system tables
+export const services = pgTable("services", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  description: varchar("description"),
+  duration: integer("duration").notNull(), // minutes
+  price: integer("price").default(0), // in HUF
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const appointments = pgTable("appointments", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  serviceId: varchar("service_id").references(() => services.id),
+  clientName: varchar("client_name").notNull(),
+  clientEmail: varchar("client_email").notNull(),
+  clientPhone: varchar("client_phone"),
+  appointmentDate: timestamp("appointment_date").notNull(),
+  duration: integer("duration").notNull(), // minutes
+  status: varchar("status").notNull().default("pending"), // pending, confirmed, cancelled, completed
+  notes: varchar("notes"),
+  meetingLink: varchar("meeting_link"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const serviceRelations = relations(services, ({ many }) => ({
+  appointments: many(appointments),
+}));
+
+export const appointmentRelations = relations(appointments, ({ one }) => ({
+  service: one(services, {
+    fields: [appointments.serviceId],
+    references: [services.id],
+  }),
+}));
+
+export const insertServiceSchema = createInsertSchema(services).pick({
+  name: true,
+  description: true,
+  duration: true,
+  price: true,
+  isActive: true,
+});
+
+export const insertAppointmentSchema = createInsertSchema(appointments).pick({
+  serviceId: true,
+  clientName: true,
+  clientEmail: true,
+  clientPhone: true,
+  appointmentDate: true,
+  duration: true,
+  notes: true,
+}).extend({
+  clientEmail: z.string().email("Érvényes email címet adjon meg"),
+  clientName: z.string().min(2, "A név legalább 2 karakter hosszú legyen"),
+  clientPhone: z.string().optional(),
+  appointmentDate: z.string().transform((str) => new Date(str)),
+  notes: z.string().optional(),
+});
+
+export type Service = typeof services.$inferSelect;
+export type InsertService = z.infer<typeof insertServiceSchema>;
+export type Appointment = typeof appointments.$inferSelect;
+export type InsertAppointment = z.infer<typeof insertAppointmentSchema>;

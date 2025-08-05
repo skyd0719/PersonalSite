@@ -3,6 +3,13 @@
 This is a professional personal website for Kun Botond built as a full-stack web application. The project features a modern, responsive frontend showcasing consulting services with a fully functional contact form system integrated with Telegram bot notifications. It's designed as a business portfolio/landing page for Kun Botond, with sections for introduction, services, and client contact functionality. The application uses a monorepo structure with shared TypeScript schemas and implements modern web development practices.
 
 # Recent Changes
+- **2025-08-05**: Advanced booking system implemented
+  - PostgreSQL database integration with Drizzle ORM
+  - Services and appointments tables created
+  - Professional booking form with time slot selection
+  - Telegram notifications for new appointments
+  - Hero section updated to highlight free consultation
+  - Navigation includes booking section
 - **2025-08-04**: Comprehensive SEO optimization completed
   - Meta tags, Open Graph, Twitter cards optimized
   - Structured data (Schema.org) for business information
