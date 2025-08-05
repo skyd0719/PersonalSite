@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://botit.hu/sitemap.xml
+
+# Optimized for search engines
+Crawl-delay: 1

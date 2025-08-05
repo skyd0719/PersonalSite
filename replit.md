@@ -3,6 +3,14 @@
 This is a professional personal website for Kun Botond built as a full-stack web application. The project features a modern, responsive frontend showcasing consulting services with a fully functional contact form system integrated with Telegram bot notifications. It's designed as a business portfolio/landing page for Kun Botond, with sections for introduction, services, and client contact functionality. The application uses a monorepo structure with shared TypeScript schemas and implements modern web development practices.
 
 # Recent Changes
+- **2025-08-04**: Comprehensive SEO optimization completed
+  - Meta tags, Open Graph, Twitter cards optimized
+  - Structured data (Schema.org) for business information
+  - Robots.txt, sitemap.xml, and manifest.json added
+  - Performance hints and caching headers implemented
+  - Hungarian language and geographic targeting
+- **2025-08-04**: Text formatting consistency improvements (lowercase titles)
+- **2025-08-04**: Copyright year updated to 2025
 - **2025-08-04**: Telegram bot integration completed and tested successfully
 - **2025-08-04**: SendGrid email functionality removed (replaced by Telegram notifications)
 - **2025-08-04**: Contact form validates and sends notifications to Chat ID: 7518315750

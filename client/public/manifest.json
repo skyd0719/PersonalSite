@@ -1,0 +1,16 @@
+{
+  "name": "Kun Botond - Professzionális Tanácsadó",
+  "short_name": "Kun Botond",
+  "description": "Professzionális tanácsadó szolgáltatások: stratégiai tanácsadás, projektmenedzsment és innovációs tanácsadás",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "/assets/profile-photo.jpg",
+      "sizes": "400x400",
+      "type": "image/jpeg"
+    }
+  ]
+}

@@ -20,7 +20,7 @@ export default function Hero() {
           <div className="space-y-8">
             <div className="space-y-4">
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight">
-                Professzionális <span className="text-primary">megoldások</span> az Ön számára
+                Professzionális <span className="text-primary">tanácsadó megoldások</span> az Ön számára
               </h1>
               <p className="text-xl text-muted-foreground leading-relaxed">
                 Több mint 10 éves tapasztalattal segítem ügyfeleimet céljaik elérésében. 

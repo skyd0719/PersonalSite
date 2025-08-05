@@ -51,7 +51,7 @@ export default function Services() {
     <section id="services" className="section-padding bg-muted/30">
       <div className="container-max">
         <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">Szolgáltatások</h2>
+          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">Tanácsadó szolgáltatások</h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             Átfogó szolgáltatásaim segítségével támogatom ügyfeleim célkitűzéseinek megvalósítását.
           </p>

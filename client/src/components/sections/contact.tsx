@@ -78,7 +78,7 @@ export default function Contact() {
     <section id="contact" className="section-padding bg-background">
       <div className="container-max">
         <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">Kapcsolatfelvétel</h2>
+          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">Kapcsolatfelvétel tanácsadóval</h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             Vegye fel velem a kapcsolatot! Szívesen beszélek projektjéről és arról, hogyan segíthetek.
           </p>
