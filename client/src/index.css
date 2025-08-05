@@ -53,7 +53,7 @@
   --business-neutral-900: hsl(224, 71%, 4%);
 }
 
-html.dark {
+.dark {
   --background: hsl(224, 71%, 4%);
   --foreground: hsl(213, 31%, 91%);
   --muted: hsl(223, 47%, 11%);
