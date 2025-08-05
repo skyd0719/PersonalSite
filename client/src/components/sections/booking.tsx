@@ -174,7 +174,7 @@ export default function Booking() {
             <CardHeader className="px-0 pt-0">
               <CardTitle className="flex items-center gap-2">
                 <Calendar className="h-5 w-5 text-primary" />
-                Időpont foglalás
+                Időpontfoglalás
               </CardTitle>
             </CardHeader>
             <CardContent className="px-0">
@@ -273,7 +273,7 @@ export default function Booking() {
                   ) : (
                     <>
                       <CheckCircle className="mr-2 h-4 w-4" />
-                      Időpont foglalása
+                      Időpontfoglalás
                     </>
                   )}
                 </Button>

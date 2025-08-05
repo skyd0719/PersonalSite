@@ -4,6 +4,7 @@ This is a professional personal website for Kun Botond built as a full-stack web
 
 # Recent Changes
 - **2025-08-05**: Advanced booking system implemented and refined
+  - **Helyesírási javítás**: "Időpont foglalás" → "Időpontfoglalás" az egész projektben
   - PostgreSQL database integration with Drizzle ORM
   - Services and appointments tables created
   - Focus on single service: 30-minute free online consultation only

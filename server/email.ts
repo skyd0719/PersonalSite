@@ -33,10 +33,10 @@ export async function sendAppointmentConfirmation(data: AppointmentEmailData): P
     const msg = {
       to: data.clientEmail,
       from: 'kun.botond@icloud.com',
-      subject: 'Időpont foglalás megerősítése - Kun Botond',
+      subject: 'Időpontfoglalás megerősítése - Kun Botond',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #2563eb;">Időpont foglalás megerősítése</h2>
+          <h2 style="color: #2563eb;">Időpontfoglalás megerősítése</h2>
           
           <p>Kedves <strong>${data.clientName}</strong>!</p>
           

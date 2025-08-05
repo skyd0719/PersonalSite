@@ -165,7 +165,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Send both Telegram and Email notifications
       console.log("\n" + "=".repeat(60));
-      console.log("📅 ÚJ IDŐPONT FOGLALÁS!");
+      console.log("📅 ÚJ IDŐPONTFOGLALÁS!");
       console.log("=".repeat(60));
       console.log(`👤 Név: ${validatedData.clientName}`);
       console.log(`📧 Email: ${validatedData.clientEmail}`);
@@ -187,7 +187,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       // Send Telegram notification
-      const telegramMessage = `🎯 **ÚJ IDŐPONT FOGLALÁS**\n\n` +
+      const telegramMessage = `🎯 **ÚJ IDŐPONTFOGLALÁS**\n\n` +
         `👤 **Név:** ${validatedData.clientName}\n` +
         `📧 **Email:** ${validatedData.clientEmail}\n` +
         `📱 **Telefon:** ${validatedData.clientPhone || 'Nincs megadva'}\n` +
@@ -200,7 +200,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       await sendTelegramNotification({
         name: validatedData.clientName,
         email: validatedData.clientEmail,
-        subject: `Új időpont foglalás - ${appointmentTime.toLocaleDateString('hu-HU')}`,
+        subject: `Új időpontfoglalás - ${appointmentTime.toLocaleDateString('hu-HU')}`,
         message: telegramMessage
       });
 
