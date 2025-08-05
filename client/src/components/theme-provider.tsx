@@ -49,13 +49,19 @@ export function ThemeProvider({
   const setTheme = (newTheme: Theme) => {
     console.log('💡 Theme change requested:', theme, '->', newTheme)
     
-    // Update localStorage
-    localStorage.setItem(storageKey, newTheme)
-    
-    // Update state
-    setThemeState(newTheme)
-    
-    console.log('✅ Theme state updated to:', newTheme)
+    try {
+      // Update localStorage
+      localStorage.setItem(storageKey, newTheme)
+      console.log('📦 localStorage updated')
+      
+      // Update state
+      setThemeState(newTheme)
+      console.log('🔄 setThemeState called')
+      
+      console.log('✅ Theme state updated to:', newTheme)
+    } catch (error) {
+      console.error('🚨 Error in setTheme:', error)
+    }
   }
 
   const value = {
