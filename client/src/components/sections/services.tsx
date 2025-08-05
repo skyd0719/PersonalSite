@@ -17,7 +17,7 @@ export default function Services() {
   const services = [
     {
       icon: TrendingUp,
-      title: "Stratégiai Tanácsadás",
+      title: "Stratégiai tanácsadás",
       description: "Segítek ügyfeleim számára a legoptimálisabb stratégiai döntések meghozatalában és a célok elérésében.",
       features: [
         "Üzleti stratégia fejlesztés",
@@ -37,7 +37,7 @@ export default function Services() {
     },
     {
       icon: Lightbulb,
-      title: "Innovációs Tanácsadás",
+      title: "Innovációs tanácsadás",
       description: "Támogatom ügyfeleim innovációs törekvéseit és a digitális transzformációs folyamatokat.",
       features: [
         "Technológiai megoldások",
