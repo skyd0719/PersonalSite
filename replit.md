@@ -6,7 +6,7 @@ This is a professional personal website for Kun Botond built as a full-stack web
 - **2025-08-05**: Advanced booking system implemented and refined
   - PostgreSQL database integration with Drizzle ORM
   - Services and appointments tables created
-  - Focus on single service: 60-minute free online consultation only
+  - Focus on single service: 30-minute free online consultation only
   - Professional booking form with time slot selection (weekdays 9-17)
   - Telegram notifications for new appointments
   - Hero section updated to highlight "Ingyenes online konzultáció"

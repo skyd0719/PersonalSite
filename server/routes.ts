@@ -137,7 +137,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Check for time slot conflicts
       const appointmentTime = new Date(validatedData.appointmentDate);
       const conflictStart = new Date(appointmentTime.getTime() - 30 * 60 * 1000); // 30 minutes before
-      const conflictEnd = new Date(appointmentTime.getTime() + 90 * 60 * 1000); // 90 minutes after
+      const conflictEnd = new Date(appointmentTime.getTime() + 60 * 60 * 1000); // 60 minutes after (30 min + 30 min buffer)
 
       const existingAppointments = await db
         .select()

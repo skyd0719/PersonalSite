@@ -25,6 +25,7 @@ export default function Hero() {
               <p className="text-xl text-muted-foreground leading-relaxed">
                 Több mint 10 éves tapasztalattal segítem ügyfeleimet céljaik elérésében. 
                 Szakértelmem és elkötelezettségem garantálja a kiváló eredményeket.
+                <br /><strong>Első konzultáció 30 percben, teljesen ingyenes!</strong>
               </p>
             </div>
             

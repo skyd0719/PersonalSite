@@ -86,7 +86,7 @@ export default function Booking() {
     bookingMutation.mutate({
       ...formData,
       serviceId: freeConsultationService?.id || "",
-      duration: 60,
+      duration: 30,
     } as InsertAppointment);
   };
 
@@ -164,7 +164,7 @@ export default function Booking() {
             Foglaljon ingyenes online konzultációt
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Beszéljük meg projektjét egy online konzultáció keretében. Az első konzultáció ingyenes és 60 percet tart!
+            Beszéljük meg projektjét egy online konzultáció keretében. Az első konzultáció ingyenes és 30 percet tart!
           </p>
         </div>
 
@@ -184,7 +184,7 @@ export default function Booking() {
                   <Label htmlFor="service">Szolgáltatás típusa</Label>
                   <div className="p-3 bg-muted rounded-md border">
                     <p className="font-medium text-foreground">
-                      Ingyenes online konzultáció (60 perc)
+                      Ingyenes online konzultáció (30 perc)
                     </p>
                     <p className="text-sm text-muted-foreground mt-1">
                       Ismerkedő beszélgetés projektjéről és együttműködési lehetőségekről

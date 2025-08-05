@@ -75,9 +75,9 @@ export const insertServiceSchema = createInsertSchema(services).pick({
 // Future services to be added later (currently commented out):
 /*
 Future Service Options:
-1. Stratégiai tanácsadás (90 perc, 25,000 HUF) - Vállalati stratégia kidolgozása és optimalizálása
-2. Projektmenedzsment tanácsadás (90 perc, 25,000 HUF) - Projekt tervezés, koordináció és megvalósítás támogatása  
-3. Innovációs tanácsadás (90 perc, 25,000 HUF) - Új ötletek fejlesztése és piaci lehetőségek felmérése
+1. Stratégiai tanácsadás (60 perc, 20,000 HUF) - Vállalati stratégia kidolgozása és optimalizálása
+2. Projektmenedzsment tanácsadás (60 perc, 20,000 HUF) - Projekt tervezés, koordináció és megvalósítás támogatása  
+3. Innovációs tanácsadás (60 perc, 20,000 HUF) - Új ötletek fejlesztése és piaci lehetőségek felmérése
 4. Digitalizációs tanácsadás (120 perc, 35,000 HUF) - Digitális átállás és modernizációs folyamatok
 5. Üzleti folyamat optimalizálás (90 perc, 30,000 HUF) - Meglévő folyamatok hatékonyságának növelése
 */
