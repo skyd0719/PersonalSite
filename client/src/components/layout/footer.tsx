@@ -64,7 +64,7 @@ export default function Footer() {
         
         <div className="border-t border-slate-800 mt-8 pt-8 text-center">
           <p className="text-slate-400">
-            © 2024 Kun Botond. Minden jog fenntartva.
+            © 2025 Kun Botond. Minden jog fenntartva.
           </p>
         </div>
       </div>
