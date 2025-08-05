@@ -9,12 +9,8 @@ export function ThemeToggle() {
     const newTheme = theme === "light" ? "dark" : "light"
     console.log('🔄 Toggle clicked! Current:', theme, 'New:', newTheme)
     console.log('🧪 Testing setTheme call...')
-    try {
-      setTheme(newTheme)
-      console.log('🧪 setTheme called successfully')
-    } catch (error) {
-      console.error('🚨 setTheme error:', error)
-    }
+    setTheme(newTheme)
+    console.log('🧪 setTheme called successfully')
   }
 
   console.log('🎨 ThemeToggle render - current theme:', theme)
